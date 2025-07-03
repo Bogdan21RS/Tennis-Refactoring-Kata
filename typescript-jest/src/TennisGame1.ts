@@ -24,22 +24,22 @@ export class TennisGame1 implements TennisGame {
 
   getScore(): string {
     if (this.playersHaveEqualScores()) {
-      return this.getScoreForEqualPlayerScores();
+      return this.getScoreFromEqualPlayerScores();
     }
 
     if (this.atLeastOnePlayerHasMoreThanThreePoints()) {
-      return this.getScoreForPlayerWithAdvantage();
+      return this.getScoreFromPlayerWithAdvantage();
     }
 
-    return this.getScoreForLittlePlayerScoreDifference();
+    return this.getScoreFromLittlePlayerScoreDifference();
   }
 
-  private getScoreForLittlePlayerScoreDifference() {
+  private getScoreFromLittlePlayerScoreDifference() {
     const scoreNames: string[] = ["Love", "Fifteen", "Thirty", "Forty"];
     return `${scoreNames[this.player1Score]}-${scoreNames[this.player2Score]}`;
   }
 
-  private getScoreForPlayerWithAdvantage(): string {
+  private getScoreFromPlayerWithAdvantage(): string {
     const scoreDifference: number = this.player1Score - this.player2Score;
     if (this.playerOneHasAdvantage(scoreDifference)) {
       return "Advantage player1";
@@ -81,7 +81,7 @@ export class TennisGame1 implements TennisGame {
     return playerName === this.player1Name;
   }
 
-  private getScoreForEqualPlayerScores(): string {
+  private getScoreFromEqualPlayerScores(): string {
     const scoreNames: string[] = ["Love-All", "Fifteen-All", "Thirty-All"];
     return scoreNames[this.player1Score] || "Deuce";
   }
