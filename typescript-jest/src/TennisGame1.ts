@@ -24,52 +24,70 @@ export class TennisGame1 implements TennisGame {
 
   getScore(): string {
     let score: string = "";
+
+    if (this.playersHaveEqualScores()) {
+      const scoreNames: string[] = ["Love-All", "Fifteen-All", "Thirty-All"];
+      return scoreNames[this.player1Score] || "Deuce";
+    }
+
+    if (this.atLeastOnePlayerHasMoreThanThreePoints()) {
+      const scoreDifference: number = this.player1Score - this.player2Score;
+      if (this.playerOneHasAdvantage(scoreDifference)) {
+        return "Advantage player1";
+      }
+      if (this.playerTwoHasAdvantage(scoreDifference)) {
+        return "Advantage player2";
+      }
+      if (this.playerOneHasMoreThanOnePointAdvantage(scoreDifference)) {
+        return "Win for player1";
+      }
+      return "Win for player2";
+    }
+
     let tempScore: number = 0;
-    if (this.player1Score === this.player2Score) {
-      switch (this.player1Score) {
+    for (let i = 1; i < 3; i++) {
+      if (i === 1) tempScore = this.player1Score;
+      else {
+        score += "-";
+        tempScore = this.player2Score;
+      }
+      switch (tempScore) {
         case 0:
-          score = "Love-All";
+          score += "Love";
           break;
         case 1:
-          score = "Fifteen-All";
+          score += "Fifteen";
           break;
         case 2:
-          score = "Thirty-All";
+          score += "Thirty";
           break;
-        default:
-          score = "Deuce";
+        case 3:
+          score += "Forty";
           break;
-      }
-    } else if (this.player1Score >= 4 || this.player2Score >= 4) {
-      const minusResult: number = this.player1Score - this.player2Score;
-      if (minusResult === 1) score = "Advantage player1";
-      else if (minusResult === -1) score = "Advantage player2";
-      else if (minusResult >= 2) score = "Win for player1";
-      else score = "Win for player2";
-    } else {
-      for (let i = 1; i < 3; i++) {
-        if (i === 1) tempScore = this.player1Score;
-        else {
-          score += "-";
-          tempScore = this.player2Score;
-        }
-        switch (tempScore) {
-          case 0:
-            score += "Love";
-            break;
-          case 1:
-            score += "Fifteen";
-            break;
-          case 2:
-            score += "Thirty";
-            break;
-          case 3:
-            score += "Forty";
-            break;
-        }
       }
     }
+
     return score;
+  }
+
+  private playerOneHasMoreThanOnePointAdvantage(scoreDifference: number) {
+    return scoreDifference >= 2;
+  }
+
+  private playerTwoHasAdvantage(scoreDifference: number) {
+    return scoreDifference === -1;
+  }
+
+  private playerOneHasAdvantage(scoreDifference: number) {
+    return scoreDifference === 1;
+  }
+
+  private atLeastOnePlayerHasMoreThanThreePoints(): boolean {
+    return this.player1Score >= 4 || this.player2Score >= 4;
+  }
+
+  private playersHaveEqualScores(): boolean {
+    return this.player1Score === this.player2Score;
   }
 
   private isPlayerTwo(playerName: string): boolean {
