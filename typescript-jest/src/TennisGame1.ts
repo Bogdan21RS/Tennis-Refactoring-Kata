@@ -23,51 +23,34 @@ export class TennisGame1 implements TennisGame {
   }
 
   getScore(): string {
-    let score: string = "";
-
     if (this.playersHaveEqualScores()) {
-      const scoreNames: string[] = ["Love-All", "Fifteen-All", "Thirty-All"];
-      return scoreNames[this.player1Score] || "Deuce";
+      return this.getScoreForEqualPlayerScores();
     }
 
     if (this.atLeastOnePlayerHasMoreThanThreePoints()) {
-      const scoreDifference: number = this.player1Score - this.player2Score;
-      if (this.playerOneHasAdvantage(scoreDifference)) {
-        return "Advantage player1";
-      }
-      if (this.playerTwoHasAdvantage(scoreDifference)) {
-        return "Advantage player2";
-      }
-      if (this.playerOneHasMoreThanOnePointAdvantage(scoreDifference)) {
-        return "Win for player1";
-      }
-      return "Win for player2";
+      return this.getScoreForPlayerWithAdvantage();
     }
 
-    let tempScore: number = 0;
-    for (let i = 1; i < 3; i++) {
-      if (i === 1) tempScore = this.player1Score;
-      else {
-        score += "-";
-        tempScore = this.player2Score;
-      }
-      switch (tempScore) {
-        case 0:
-          score += "Love";
-          break;
-        case 1:
-          score += "Fifteen";
-          break;
-        case 2:
-          score += "Thirty";
-          break;
-        case 3:
-          score += "Forty";
-          break;
-      }
-    }
+    return this.getScoreForLittlePlayerScoreDifference();
+  }
 
-    return score;
+  private getScoreForLittlePlayerScoreDifference() {
+    const scoreNames: string[] = ["Love", "Fifteen", "Thirty", "Forty"];
+    return `${scoreNames[this.player1Score]}-${scoreNames[this.player2Score]}`;
+  }
+
+  private getScoreForPlayerWithAdvantage(): string {
+    const scoreDifference: number = this.player1Score - this.player2Score;
+    if (this.playerOneHasAdvantage(scoreDifference)) {
+      return "Advantage player1";
+    }
+    if (this.playerTwoHasAdvantage(scoreDifference)) {
+      return "Advantage player2";
+    }
+    if (this.playerOneHasMoreThanOnePointAdvantage(scoreDifference)) {
+      return "Win for player1";
+    }
+    return "Win for player2";
   }
 
   private playerOneHasMoreThanOnePointAdvantage(scoreDifference: number) {
@@ -96,5 +79,10 @@ export class TennisGame1 implements TennisGame {
 
   private isPlayerOne(playerName: string): boolean {
     return playerName === this.player1Name;
+  }
+
+  private getScoreForEqualPlayerScores(): string {
+    const scoreNames: string[] = ["Love-All", "Fifteen-All", "Thirty-All"];
+    return scoreNames[this.player1Score] || "Deuce";
   }
 }
